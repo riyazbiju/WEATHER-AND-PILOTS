@@ -1,0 +1,79 @@
+# 📘 README: Hybrid Geo-Spatial Weather Query Tool
+
+## 🌍 Introduction
+
+Welcome to the **Hybrid Geo-Spatial Weather Query Tool**! This Google Colab notebook combines two ideas:
+1.  The ability to query **any point in space and time** (like a high-altitude balloon location).
+2.  The ability to use **real-world station data** (from the provided `aerodrome_database.csv`) to provide geographical context.
+
+The code takes your arbitrary location (latitude, longitude, and altitude) and time, and then outputs two things:
+1.  **Simulated Weather Data:** The conceptual weather readings for your exact input point.
+2.  **Geographical Context:** It calculates the distance to the **nearest Canadian airport** in the database to anchor your query in reality.
+
+---
+
+## 🚀 Requirements and Setup
+
+To run this notebook successfully, you only need two things:
+
+1.  **Google Colab / Jupyter Environment:** The code is designed to run cell-by-cell in this format.
+2.  **`aerodrome_database.csv`:** This file must be uploaded to your notebook session's file system.
+
+### Setup Steps (Google Colab)
+
+1.  Open your notebook in Google Colab.
+2.  Click the **Folder Icon** (Files tab) on the left sidebar.
+3.  Click the **Upload Icon** (up arrow) and select the `aerodrome_database.csv` file from your computer.
+
+---
+
+## 📝 How to Use the Code
+
+The notebook is divided into three runnable cells. Execute them sequentially:
+
+### Cell 1: Setup and Data Loading
+
+* **Action:** Click inside the first code cell and press the **Run button** (the triangle 'play' icon) or press `Shift + Enter`.
+* **Result:** This silently loads all libraries, defines the necessary distance and simulation functions, and loads the `aerodrome_database.csv` into memory.
+
+### Cell 2: Getting User Input
+
+* **Action:** Run this code cell.
+* **Prompts:** You will be prompted to enter the four core parameters for your query:
+    1.  **Date (YYYY-MM-DD):** e.g., `2025-10-01`
+    2.  **Time (HH:MM in 24h format):** e.g., `03:35`
+    3.  **Latitude:** The North/South position (e.g., `51.5`).
+    4.  **Longitude:** The East/West position (e.g., `-115.0`).
+    5.  **Altitude in meters:** Your height above sea level (e.g., `2000`).
+* **Note:** The code will check your entries to ensure they are valid numbers/formats before proceeding.
+
+### Cell 3: Execution and Display
+
+* **Action:** Run this final code cell.
+* **Result:** The notebook runs the calculations and displays the final, formatted output in three distinct sections:
+    1.  **Arbitrary Observation Point:** Shows your exact input (t, lat, lon, alt).
+    2.  **Nearest Reporting Station:** Identifies the closest airport from the CSV and the distance to it.
+    3.  **Conceptual Weather Data Retrieval:** Shows the simulated meteorological values for your point.
+
+---
+
+## 🧠 Detailed Code Explanation (For Beginners)
+
+The logic of this hybrid tool relies on two powerful mathematical concepts:
+
+### 1. The Haversine Formula (Finding the Nearest Station)
+
+* **Location:** Defined in Cell 1 by the Python function `def haversine(...)`.
+* **Purpose:** This formula calculates the **great-circle distance** between any two points on the Earth's surface. Think of it as finding the distance along the surface of a perfect sphere.
+* **In the Code:** When you enter your arbitrary latitude and longitude, the code uses the Haversine formula to calculate the distance from your point to *every single Canadian airport* in the CSV. It then picks the one with the smallest distance to give you the `Nearest Reporting Station`.
+
+### 2. Conceptual Weather Simulation
+
+* **Location:** Defined in Cell 1 by the Python function `def query_wmo_data_arbitrary(...)`.
+* **Purpose:** This function simulates the work of a real-world **Numerical Weather Prediction (NWP) Model**.
+* **How it Simulates:** Since we are not connected to a live satellite or weather API, the function uses simple meteorological rules. For example, it calculates the `Interpolated Temperature C` by starting with a base value and reducing it based on your `Altitude in meters`. This simulates the **lapse rate** (temperature dropping with height).
+* **Key Point:** The output here is **not actual forecast data**; it is a conceptual placeholder showing what kind of dynamic data a true WMO-affiliated system would provide for your coordinates and time.
+
+### 3. Data Integration
+
+* The code uses the `pandas` library to hold the `aerodrome_database.csv`. Your arbitrary coordinates are used as the "query key" against this database, merging the flexibility of free input with the stability of a static database of known locations.
